@@ -4,14 +4,21 @@ FROM $BASE_CONTAINER
 
 LABEL maintainer="Mridul Seth <seth.mridul@gmail.com>"
 
+USER root
+
+# install latex-full installation
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends texlive-full dvipng && \
+    rm -rf /var/lib/apt/lists/*
+
 USER $NB_UID
+WORKDIR $HOME
 
 # packages required on top of scipy-notebook docker stack.
-RUN conda install --quiet --yes \
+# install latest release of econ-ark
+RUN conda install  --yes \
     'econ-ark' \
     && \
     conda clean --all -f -y && \
     fix-permissions $CONDA_DIR && \
     fix-permissions /home/$NB_USER
-
-
